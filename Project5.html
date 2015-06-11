@@ -1,0 +1,85 @@
+<!--  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----
+
+   Author:  Miguel Rodriguez
+   Date:    04/20/2015
+   Purpose: Assigned Project#5.
+   Descrip: A single-page application utilizing APIs to:
+            1) Display a Google map of a searched neighborhood and mark the found address.
+            2) Initially, the Google map displays and marks my address.  When the address
+               is changed and the "MarkIt!" button is pressed, old markers are swept away
+               and new ones are created.
+            3) Yelp reviews of nearby 20 cafes, for a selected address.
+
+-----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -->
+
+<!DOCTYPE html>
+<html>
+   <head>
+      <!--  Identify window title and meta information.   -->
+      <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+      <meta charset="utf-8">
+      <title>Address and Cafe Finder</title>
+
+      <!-- Point to external style sheet. -->
+      <link rel="stylesheet" href="css/Project5.css">
+
+      <!-- Point to google's api library. -->
+      <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true"></script>
+
+      <!-- Point to Jquery library. -->
+      <script src="js/libs/jquery.min.js"></script>
+
+      <!-- Driving functions which displays map objects. -->
+      <script src="js/Project5.js"></script>
+      <script>
+
+         <!-- Hold address marker -->
+         var addressMarker;
+
+         <!-- Array to hold Yelp markers -->
+         var yelp = [];
+         var bounds;
+
+         <!-- Google API to create relatively sized image icons   -->
+         var cafeIcon = new google.maps.MarkerImage(
+             'images/Cafe.png'   /* local graphic PNG file  */
+          ,  null                /* size is determined at runtime */
+          ,  null                /* origin is 0,0 */
+          ,  null                /* anchor is bottom center of the scaled image */
+          ,  new google.maps.Size(20, 32)
+         );
+
+         <!-- Hold info window object. -->
+         var infowindow = new google.maps.InfoWindow();
+
+         <!-- Lat/Lon of my address (15574 Forest Creek Drive, Frisco, Tx., 75035). -->
+         var latlng = new google.maps.LatLng(33.13711352271987, -96.73793427200314);
+
+         <!-- Google API provided geo-coder object. -->
+         var geocoder = new google.maps.Geocoder();
+
+         <!-- Per Google API, this object sets zoom level to 14 and centers generated maps. -->
+         var mapOptions = {
+            zoom: 14,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+         };
+
+         <!-- Variable used to store mapping objects returned by one of the Google APIs. -->
+         var map;
+
+         <!-- Create initial event handler, to call initialize() function, when the window initially loads. -->
+         google.maps.event.addDomListener(window, 'load', initialize);
+
+      </script>
+   </head>
+  <body>
+    <!--- Panel to input address (textbox) and MarkIt (button). -->
+    <div id="Address_panel">
+      <input id="address"        type="text"       value="15574 Forest Creek Drive, Frisco, Texas, 75035" placeholder="Enter Address"></input>
+      <input id="Geocode"        type="button"     value="MarkIt!" onclick="codeAddress()"></input>
+      <input id="toggleFlickr"   type="checkbox"                   onClick="toggleCafeLayer(yelp)" checked>20 Nearby Cafes</input>
+    </div>
+    <div id="map-canvas"></div>
+  </body>
+</html>
